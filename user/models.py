@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+from django.core.mail import send_mail
 
 
 class Profile(models.Model):
@@ -29,12 +30,19 @@ class Profile(models.Model):
         return reverse('user:detail', kwargs={'user': self.first_name})
 
     def generation_password(self):
-        self.password = User.objects.make_random_password()
-
-        # self.password = make_password(password)
+        # Генерирует пароль
+        password = User.objects.make_random_password()
+        # Отправка пароля на почту
+        self.send_password(password)
+        # Хеширует пароль
+        self.password = make_password(password)
         return self.password
 
-    # def check_password(self, password):
-    #     return check_password(self.password, password)
-
+    def send_password(self, password):
+        subject = 'Здравствуйте, вы зарегистрировались на сайте BookStore.by. Ваш пароль: {}'.format(password)
+        message = 'Ваш пароль'
+        from_email = self.email
+        recipient_list = ['evgen@mail.ru']
+        send_mail(subject, message, from_email, recipient_list)
+        pass
 

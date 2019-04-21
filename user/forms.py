@@ -25,14 +25,15 @@ class ProfileRegisterForm(forms.ModelForm):
     def clean(self):
         email = self.cleaned_data['email']
 
-        if User.objects.filter(email=email).exists():
+        if Profile.objects.filter(email=email).exists():
             raise forms.ValidationError('Пользователь с данной почтой уже зарегистрирован')
 
     def save(self, commit=True):
         profile = super().save(commit=False)
-        profile.generation_password()
+        profile.password = profile.generation_password()
         if commit:
             profile.save()
+
         return profile
 
 

@@ -3,9 +3,10 @@ from django.views.generic.base import View
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import check_password
 
-from user.forms import ProfileRegisterForm, ProfileRegisterForm, LoginForm
+from user.auth_backends import authenticate
+
+from user.forms import ProfileRegisterForm, LoginForm
 
 
 class LogoutView(View):
@@ -21,12 +22,10 @@ def login_view(request):
         if form.is_valid():
             user_email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            if check_password(request.POST['password'], password):
-
-                user = authenticate(email=user_email, password=password)
-                if user:
-                    login(request, user)
-                    return redirect('index')
+            user = authenticate(email=user_email, password=password)
+            if user:
+                login(request, user)
+                return redirect('index')
         return render(request, 'login.html', {'form': form})
     else:
         form = LoginForm()

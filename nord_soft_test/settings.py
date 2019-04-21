@@ -142,3 +142,16 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+# For send email on the sendgrid
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'EvgenKh'
+EMAIL_HOST_PASSWORD = 'SVF6DTepCadas6BeTd'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+# Custom implementation of email authentication
+AUTHENTICATION_BACKENDS = [
+ 'user.auth_backends.EmailAuthBackend',
+]
